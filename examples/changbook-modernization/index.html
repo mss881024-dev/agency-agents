@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>도서출판 창 — 책이라는 창(窓)</title>
+<meta name="description" content="도서출판 창: 한자·서예, 외국어, 두뇌놀이, 인문고전, 생활백과 도서 전문 출판사">
+<style>
+  :root{
+    --ink:#29241f;
+    --ink-soft:#5c5042;
+    --paper:#ece5d3;
+    --paper-raised:#f7f2e5;
+    --line:#d7cbac;
+    --celadon:#3f7368;
+    --celadon-deep:#24493f;
+    --seal:#a83a2e;
+    --seal-ink:#8a2f25;
+    --shadow: 0 1px 2px rgba(41,36,31,.06), 0 8px 24px -12px rgba(41,36,31,.22);
+    --radius: 3px;
+    --genre-calligraphy:#24493f;
+    --genre-language:#8c6a2f;
+    --genre-brain:#3f7368;
+    --genre-play:#7d4a52;
+    --genre-humanities:#463a2c;
+    --genre-health:#4f6b3d;
+    --genre-growth:#a83a2e;
+    --font-display:'Nanum Myeongjo','Noto Serif KR','Batang',serif;
+    --font-body:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#ece4d2;
+      --ink-soft:#bcae95;
+      --paper:#1b1915;
+      --paper-raised:#242119;
+      --line:#3b3527;
+      --celadon:#79b3a4;
+      --celadon-deep:#a3d0c2;
+      --seal:#dd8a72;
+      --seal-ink:#e6a08a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+      --genre-calligraphy:#8fc9b9;
+      --genre-language:#d3ab5f;
+      --genre-brain:#79b3a4;
+      --genre-play:#c98a94;
+      --genre-humanities:#b9a688;
+      --genre-health:#8fb374;
+      --genre-growth:#dd8a72;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#ece4d2; --ink-soft:#bcae95; --paper:#1b1915; --paper-raised:#242119; --line:#3b3527;
+    --celadon:#79b3a4; --celadon-deep:#a3d0c2; --seal:#dd8a72; --seal-ink:#e6a08a;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+    --genre-calligraphy:#8fc9b9; --genre-language:#d3ab5f; --genre-brain:#79b3a4;
+    --genre-play:#c98a94; --genre-humanities:#b9a688; --genre-health:#8fb374; --genre-growth:#dd8a72;
+  }
+  :root[data-theme="light"]{
+    --ink:#29241f; --ink-soft:#5c5042; --paper:#ece5d3; --paper-raised:#f7f2e5; --line:#d7cbac;
+    --celadon:#3f7368; --celadon-deep:#24493f; --seal:#a83a2e; --seal-ink:#8a2f25;
+    --shadow: 0 1px 2px rgba(41,36,31,.06), 0 8px 24px -12px rgba(41,36,31,.22);
+    --genre-calligraphy:#24493f; --genre-language:#8c6a2f; --genre-brain:#3f7368;
+    --genre-play:#7d4a52; --genre-humanities:#463a2c; --genre-health:#4f6b3d; --genre-growth:#a83a2e;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.6;
+    font-feature-settings:'tnum' 1;
+  }
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+  h1,h2,h3{font-family:var(--font-display); font-weight:700; text-wrap:balance; margin:0;}
+  button{font:inherit;}
+  :focus-visible{outline:2px solid var(--celadon); outline-offset:2px;}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 20px;}
+
+  /* header */
+  header.site{
+    position:sticky; top:0; z-index:40;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .site-bar{display:flex; align-items:center; justify-content:space-between; padding:14px 20px; gap:16px;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
+  .brand-mark{width:30px;height:30px;flex:0 0 auto;}
+  .brand-name{font-family:var(--font-display); font-size:19px; font-weight:700; letter-spacing:.01em;}
+  .brand-sub{display:none;}
+  nav.main-nav{display:flex; gap:28px;}
+  nav.main-nav a{
+    font-size:14.5px; text-decoration:none; color:var(--ink-soft);
+    padding:6px 0; border-bottom:2px solid transparent;
+  }
+  nav.main-nav a:hover{color:var(--ink); border-color:var(--line);}
+  .nav-toggle{display:none; background:none; border:1px solid var(--line); border-radius:var(--radius); width:40px; height:36px; align-items:center; justify-content:center;}
+  .nav-toggle svg{width:18px;height:18px;}
+
+  @media (max-width:760px){
+    nav.main-nav{
+      position:absolute; top:100%; left:0; right:0;
+      background:var(--paper-raised); border-bottom:1px solid var(--line);
+      flex-direction:column; gap:0; padding:6px 20px; display:none;
+    }
+    nav.main-nav.open{display:flex;}
+    nav.main-nav a{padding:12px 0; border-bottom:1px solid var(--line);}
+    .nav-toggle{display:flex;}
+  }
+
+  /* hero */
+  .hero{position:relative; overflow:hidden; border-bottom:1px solid var(--line);}
+  .hero-inner{
+    max-width:1180px; margin:0 auto; padding:64px 20px 56px;
+    display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--seal); font-weight:600; margin-bottom:16px;
+  }
+  .hero-eyebrow::before{content:''; width:16px; height:1px; background:var(--seal);}
+  .hero h1{font-size:clamp(28px,4.4vw,44px); line-height:1.28; margin-bottom:18px;}
+  .hero h1 em{font-style:normal; color:var(--celadon-deep);}
+  .hero p.lede{font-size:16px; color:var(--ink-soft); max-width:46ch; margin-bottom:28px;}
+  .hero-ctas{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 20px; border-radius:var(--radius); font-size:14.5px; font-weight:600;
+    text-decoration:none; border:1px solid transparent; cursor:pointer; transition:transform .12s ease, background .15s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--ink); color:var(--paper);}
+  .btn-primary:hover{background:var(--celadon-deep);}
+  .btn-ghost{border-color:var(--line); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--ink);}
+
+  .hero-window{position:relative; aspect-ratio:1/1.05; max-width:340px; margin-left:auto;}
+  .window-frame{
+    position:absolute; inset:0; border:10px solid var(--ink);
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+    background:var(--paper-raised); box-shadow:var(--shadow);
+  }
+  .window-frame::before,.window-frame::after{content:''; position:absolute; background:var(--ink);}
+  .window-frame::before{left:50%; top:0; bottom:0; width:8px; transform:translateX(-50%);}
+  .window-frame::after{top:50%; left:0; right:0; height:8px; transform:translateY(-50%);}
+  .window-pane{position:relative;}
+  .window-pane::after{
+    content:attr(data-tag); position:absolute; bottom:10px; left:10px; right:10px;
+    font-size:11px; letter-spacing:.08em; color:var(--ink-soft); text-transform:uppercase;
+  }
+  .window-pane:nth-child(1){background:color-mix(in srgb, var(--celadon) 20%, var(--paper-raised));}
+  .window-pane:nth-child(2){background:color-mix(in srgb, var(--genre-language) 18%, var(--paper-raised));}
+  .window-pane:nth-child(3){background:color-mix(in srgb, var(--genre-play) 18%, var(--paper-raised));}
+  .window-pane:nth-child(4){background:color-mix(in srgb, var(--seal) 16%, var(--paper-raised));}
+  .seal-stamp{
+    position:absolute; right:-14px; bottom:-14px; width:74px; height:74px;
+    border:3px solid var(--seal); border-radius:6px; color:var(--seal);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-size:22px; font-weight:700;
+    background:var(--paper); transform:rotate(-6deg); box-shadow:var(--shadow);
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .hero-window{animation:rise .7s ease-out both;}
+  }
+  @keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+  @media (max-width:860px){
+    .hero-inner{grid-template-columns:1fr; padding-top:44px;}
+    .hero-window{max-width:220px; margin:0 auto;}
+  }
+
+  /* controls */
+  .controls{
+    position:sticky; top:64px; z-index:30;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    padding:16px 0;
+  }
+  .controls-row{display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:space-between;}
+  .tabs{display:flex; gap:8px; flex-wrap:wrap;}
+  .tab{
+    background:none; border:1px solid var(--line); color:var(--ink-soft);
+    padding:8px 14px; border-radius:999px; font-size:13.5px; font-weight:600; cursor:pointer;
+  }
+  .tab[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--paper);}
+  .search-wrap{position:relative; min-width:200px; flex:1; max-width:280px;}
+  .search-wrap input{
+    width:100%; padding:9px 14px 9px 34px; border-radius:999px; border:1px solid var(--line);
+    background:var(--paper-raised); color:var(--ink); font-size:13.5px;
+  }
+  .search-wrap svg{position:absolute; left:11px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--ink-soft);}
+  .result-count{font-size:12.5px; color:var(--ink-soft); white-space:nowrap;}
+
+  /* section + grid */
+  main{padding:36px 0 10px;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px;}
+  .section-head h2{font-size:20px;}
+  .grid{
+    display:grid; gap:18px;
+    grid-template-columns:repeat(auto-fill, minmax(168px,1fr));
+    margin-bottom:8px;
+  }
+  .card{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius);
+    display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--shadow);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{transform:translateY(-3px);}
+  .spine{
+    height:96px; position:relative; display:flex; align-items:flex-end; padding:10px;
+    background:var(--spine-color, var(--celadon));
+  }
+  .badge{
+    position:absolute; top:8px; left:8px; font-size:10.5px; font-weight:700;
+    letter-spacing:.06em; padding:3px 7px; border-radius:3px;
+    background:rgba(255,255,255,.16); color:#fff; backdrop-filter:blur(2px);
+  }
+  .genre-chip{font-size:10.5px; color:rgba(255,255,255,.92); font-weight:600;}
+  .card-body{padding:12px 14px 14px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .card-title{font-size:14px; font-weight:600; line-height:1.4; min-height:2.8em;}
+  .card-foot{display:flex; align-items:center; justify-content:space-between; margin-top:auto; gap:8px;}
+  .price{font-size:14.5px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--seal-ink);}
+  .price.inquiry{color:var(--ink-soft); font-size:12.5px; font-weight:600;}
+  .goto{
+    font-size:12.5px; font-weight:700; text-decoration:none; color:var(--celadon-deep);
+    border:1px solid var(--line); padding:6px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .goto:hover{background:var(--celadon-deep); color:var(--paper); border-color:var(--celadon-deep);}
+  .empty{padding:40px 0; text-align:center; color:var(--ink-soft); font-size:14px; display:none;}
+
+  /* about */
+  .about{background:var(--paper-raised); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:40px;}
+  .about-inner{max-width:1180px; margin:0 auto; padding:52px 20px; display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+  .about h2{font-size:22px; margin-bottom:14px;}
+  .about p{color:var(--ink-soft); font-size:15px; max-width:52ch;}
+  .about-list{list-style:none; margin:18px 0 0; padding:0; display:grid; gap:10px;}
+  .about-list li{display:flex; gap:10px; font-size:14.5px; align-items:flex-start;}
+  .about-list .dot{width:6px;height:6px;border-radius:50%; background:var(--celadon); margin-top:8px; flex:0 0 auto;}
+  @media (max-width:760px){.about-inner{grid-template-columns:1fr;}}
+
+  /* footer */
+  footer.site{background:var(--ink); color:var(--paper); padding:44px 0 28px;}
+  footer.site .wrap{display:flex; flex-direction:column; gap:20px;}
+  .foot-top{display:flex; align-items:center; gap:10px;}
+  .foot-mark{width:22px;height:22px;}
+  .foot-name{font-family:var(--font-display); font-size:16px;}
+  .foot-info{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px 32px; font-size:13px; color:color-mix(in srgb, var(--paper) 78%, transparent);}
+  .foot-info dt{font-weight:700; color:var(--paper); display:inline;}
+  .foot-info dd{display:inline; margin:0;}
+  .foot-info a{text-decoration:underline; text-underline-offset:2px;}
+  .copyright{font-size:12px; color:color-mix(in srgb, var(--paper) 55%, transparent); border-top:1px solid color-mix(in srgb, var(--paper) 18%, transparent); padding-top:16px;}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="site-bar">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="3" width="26" height="26" rx="1" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M16 3v26M3 16h26" stroke="currentColor" stroke-width="2.4"/>
+      </svg>
+      <span class="brand-name">도서출판 창</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mainNav" aria-label="메뉴 열기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="#books">베스트셀러</a>
+      <a href="#books">신간도서</a>
+      <a href="#books">추천도서</a>
+      <a href="#about">출판사 소개</a>
+      <a href="http://www.changbook.com/skin_ws1/mail_to_admin.php">문의하기</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <div>
+      <span class="hero-eyebrow">도서출판 창 · 창(窓)</span>
+      <h1>책이라는 <em>창(窓)</em>을 열면,<br>배움이 들어옵니다.</h1>
+      <p class="lede">한자·서예 교본부터 외국어 회화, 두뇌 놀이, 동양 고전까지 — 손으로 쓰고 익히는 실용 도서를 30년 가까이 펴내고 있습니다.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#books" data-tab-link="best">베스트셀러 보기</a>
+        <a class="btn btn-ghost" href="#books" data-tab-link="all">전체 도서 28권</a>
+      </div>
+    </div>
+    <div class="hero-window" aria-hidden="true">
+      <div class="window-frame">
+        <div class="window-pane"></div>
+        <div class="window-pane"></div>
+        <div class="window-pane"></div>
+        <div class="window-pane"></div>
+      </div>
+      <div class="seal-stamp">創</div>
+    </div>
+  </div>
+</section>
+
+<div class="controls">
+  <div class="wrap controls-row">
+    <div class="tabs" id="tabs" role="tablist" aria-label="도서 분류">
+      <button class="tab" role="tab" data-filter="all" aria-pressed="true">전체</button>
+      <button class="tab" role="tab" data-filter="best" aria-pressed="false">베스트셀러</button>
+      <button class="tab" role="tab" data-filter="new" aria-pressed="false">신간도서</button>
+      <button class="tab" role="tab" data-filter="pick" aria-pressed="false">추천도서</button>
+    </div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="searchInput" placeholder="도서명으로 검색" aria-label="도서명 검색">
+    </div>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+</div>
+
+<main class="wrap" id="books">
+  <div class="section-head">
+    <h2 id="sectionTitle">전체 도서</h2>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="emptyState">검색 결과가 없습니다. 다른 검색어를 입력해 보세요.</p>
+</main>
+
+<section class="about" id="about">
+  <div class="about-inner">
+    <div>
+      <h2>어떤 책을 만드나요</h2>
+      <p>도서출판 창은 &quot;써 보고, 풀어 보고, 읽어 보며&quot; 익히는 책을 만듭니다. 정답이 하나가 아닌 두뇌 놀이와, 손끝으로 익히는 글씨, 오래 두고 곱씹는 고전까지 — 실용성과 꾸준함을 함께 담습니다.</p>
+    </div>
+    <ul class="about-list">
+      <li><span class="dot" style="background:var(--genre-calligraphy)"></span>한자·서예 — 천자문·고사성어·실용한자 쓰기교본</li>
+      <li><span class="dot" style="background:var(--genre-language)"></span>외국어 — 영어·일본어·베트남어 회화와 단어</li>
+      <li><span class="dot" style="background:var(--genre-brain)"></span>두뇌·스도쿠 — 난이도별 스도쿠 시리즈</li>
+      <li><span class="dot" style="background:var(--genre-play)"></span>컬러링·그림찾기 — 상상력을 키우는 두뇌 놀이</li>
+      <li><span class="dot" style="background:var(--genre-humanities)"></span>인문·고전 — 노자·철학개론·전통 관혼상제</li>
+      <li><span class="dot" style="background:var(--genre-health)"></span>건강·생활백과 — 동의보감 속 산약초 대백과</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-top">
+      <svg class="foot-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="3" width="26" height="26" rx="1" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M16 3v26M3 16h26" stroke="currentColor" stroke-width="2.4"/>
+      </svg>
+      <span class="foot-name">도서출판 창</span>
+    </div>
+    <dl class="foot-info">
+      <div><dt>상호</dt> <dd>도서출판 창</dd></div>
+      <div><dt>대표자</dt> <dd>이규인</dd></div>
+      <div><dt>사업자등록번호</dt> <dd>105-90-97607</dd></div>
+      <div><dt>대표전화</dt> <dd>02-322-2686</dd></div>
+      <div><dt>팩스</dt> <dd>02-326-3218</dd></div>
+      <div><dt>이메일</dt> <dd><a href="http://www.changbook.com/skin_ws1/mail_to_admin.php">changbook1@hanmail.net</a></dd></div>
+      <div style="grid-column:1/-1;"><dt>주소</dt> <dd>서울특별시 영등포구 문래북로 116 트리플렉스빌딩 903호 / 물류 B204호</dd></div>
+    </dl>
+    <p class="copyright">Copyright ⓒ 도서출판 창. All right reserved.</p>
+  </div>
+</footer>
+
+<script>
+const BOOKS = [
+  {t:"3단계 한석봉 천자문 쓰기교본", price:13000, cat:"best", genre:"calligraphy", genreLabel:"한자·서예", part:8, goods:"aWR4PTIxJl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTgmXyZzZWFyY2hfaXRlbT0="},
+  {t:"태중영가 천도 사경집", price:12000, cat:"best", genre:"calligraphy", genreLabel:"사경·서예", part:4, goods:"aWR4PTExJl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTQmXyZzZWFyY2hfaXRlbT0="},
+  {t:"카네기 성공대화론", price:14000, cat:"best", genre:"growth", genreLabel:"자기계발", part:5, goods:"aWR4PTE2MyZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD01Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"숨은 그림 찾기(상상력을 키워라!)", price:12000, cat:"best", genre:"play", genreLabel:"두뇌·컬러링", part:8, goods:"aWR4PTE3NyZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"미니북 숨은 그림 찾기(상상력을 키워라!)", price:6500, cat:"best", genre:"play", genreLabel:"두뇌·컬러링", part:8, goods:"aWR4PTE3OSZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"야생 산약초 대백과(동의보감 속의)", price:48000, cat:"best", genre:"health", genreLabel:"건강·생활백과", part:7, goods:"aWR4PTE2OCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD03Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"철학개론", price:15000, cat:"best", genre:"humanities", genreLabel:"인문·고전", part:3, goods:"aWR4PTEwJl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTMmXyZzZWFyY2hfaXRlbT0="},
+  {t:"급수별 로열 스도쿠 1(easy)", price:8000, cat:"best", genre:"brain", genreLabel:"두뇌·스도쿠", part:8, goods:"aWR4PTEzOCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"급수별 로열 스도쿠 3(hard)", price:8000, cat:"best", genre:"brain", genreLabel:"두뇌·스도쿠", part:8, goods:"aWR4PTE0MCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"어린이 스도쿠 (실전편)", price:10000, cat:"best", genre:"brain", genreLabel:"두뇌·스도쿠", part:5, goods:"aWR4PTE0OSZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD01Jl8mc2VhcmNoX2l0ZW09"},
+
+  {t:"왕초보토탈여행 베트남어회화사전", price:15000, cat:"new", genre:"language", genreLabel:"외국어", part:6, goods:"aWR4PTE0MSZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD02Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"전통 관혼상제(문답식으로 쉽게 풀이한)", price:null, cat:"new", genre:"humanities", genreLabel:"인문·고전", part:3, goods:"aWR4PTE1OCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD0zJl8mc2VhcmNoX2l0ZW09"},
+  {t:"최강 스도쿠 2 (중급)", price:8000, cat:"new", genre:"brain", genreLabel:"두뇌·스도쿠", part:8, goods:"aWR4PTE1MyZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"3단계 왕초보 영어 쓰기교본", price:12000, cat:"new", genre:"language", genreLabel:"외국어", part:5, goods:"aWR4PTE0OCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD01Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"미니북 다른 그림 찾기(상상력을 키워라!)", price:6500, cat:"new", genre:"play", genreLabel:"두뇌·컬러링", part:8, goods:"aWR4PTE4MCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"그릴수록 재미있는 화투놀이 컬러링", price:14000, cat:"new", genre:"play", genreLabel:"두뇌·컬러링", part:8, goods:"aWR4PTE3NCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"그릴수록 행복한 꽃 컬러링 북", price:14000, cat:"new", genre:"play", genreLabel:"두뇌·컬러링", part:8, goods:"aWR4PTE3MyZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"최강 스도쿠 3 (고급)", price:8000, cat:"new", genre:"brain", genreLabel:"두뇌·스도쿠", part:8, goods:"aWR4PTE1NCZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD04Jl8mc2VhcmNoX2l0ZW09"},
+
+  {t:"공주님을 위한 동화속 컬러링", price:12000, cat:"pick", genre:"play", genreLabel:"두뇌·컬러링", part:8, goods:"aWR4PTgwJl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTgmXyZzZWFyY2hfaXRlbT0="},
+  {t:"노자(개정판)", price:14000, cat:"pick", genre:"humanities", genreLabel:"인문·고전", part:3, goods:"aWR4PTE1Jl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTMmXyZzZWFyY2hfaXRlbT0="},
+  {t:"간편한 실용한자7000", price:12000, cat:"pick", genre:"calligraphy", genreLabel:"한자·서예", part:8, goods:"aWR4PTEyJl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTgmXyZzZWFyY2hfaXRlbT0="},
+  {t:"3단계 왕초보 일본어 쓰기교본", price:10000, cat:"pick", genre:"language", genreLabel:"외국어", part:8, goods:"aWR4PTM3Jl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTgmXyZzZWFyY2hfaXRlbT0="},
+  {t:"일본어 능력시험 필수단어(N2 N3)", price:13000, cat:"pick", genre:"language", genreLabel:"외국어", part:6, goods:"aWR4PTUxJl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTYmXyZzZWFyY2hfaXRlbT0="},
+  {t:"왕초보 토탈 일본어회화 사전", price:15000, cat:"pick", genre:"language", genreLabel:"외국어", part:6, goods:"aWR4PTQ5Jl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTYmXyZzZWFyY2hfaXRlbT0="},
+  {t:"명품서로다른그림찾기", price:12000, cat:"pick", genre:"play", genreLabel:"두뇌·컬러링", part:5, goods:"aWR4PTEzMyZfJnN0YXJ0UGFnZT0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD01Jl8mc2VhcmNoX2l0ZW09"},
+  {t:"왕초보3단계 패턴영어회화300", price:15000, cat:"pick", genre:"language", genreLabel:"외국어", part:6, goods:"aWR4PTQ1Jl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTYmXyZzZWFyY2hfaXRlbT0="},
+  {t:"3단계 고사성어 쓰기교본", price:12000, cat:"pick", genre:"calligraphy", genreLabel:"한자·서예", part:3, goods:"aWR4PTE3Jl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZ0YWJsZT1jc19nb29kcyZfJnBhcnRfaWR4PTMmXyZzZWFyY2hfaXRlbT0="},
+  {t:"왕초보 토탈 영어회화 사전", price:12000, cat:"pick", genre:"language", genreLabel:"외국어", part:6, goods:"aWR4PTQ0Jl8mc3RhcnRQYWdlPSZfJmxpc3RObz0mXyZsaXN0Tm89Jl8mdGFibGU9Y3NfZ29vZHMmXyZwYXJ0X2lkeD02Jl8mc2VhcmNoX2l0ZW09"}
+];
+
+const CAT_BADGE = {best:"BEST", new:"NEW", pick:"PICK"};
+const CAT_LABEL = {all:"전체 도서", best:"베스트셀러", new:"신간도서", pick:"추천도서"};
+const GENRE_VAR = {
+  calligraphy:"var(--genre-calligraphy)", language:"var(--genre-language)",
+  brain:"var(--genre-brain)", play:"var(--genre-play)",
+  humanities:"var(--genre-humanities)", health:"var(--genre-health)", growth:"var(--genre-growth)"
+};
+
+const grid = document.getElementById('grid');
+const emptyState = document.getElementById('emptyState');
+const resultCount = document.getElementById('resultCount');
+const sectionTitle = document.getElementById('sectionTitle');
+const searchInput = document.getElementById('searchInput');
+const tabs = document.querySelectorAll('.tab');
+
+let state = {filter:'all', query:''};
+
+function baseUrl(part, goods){
+  return "http://www.changbook.com/skin_ws1/product_view.php?part_idx=" + part + "&goods_data=" + goods + "||";
+}
+
+function render(){
+  const q = state.query.trim().toLowerCase();
+  const items = BOOKS.filter(b =>
+    (state.filter === 'all' || b.cat === state.filter) &&
+    (!q || b.t.toLowerCase().includes(q))
+  );
+
+  sectionTitle.textContent = CAT_LABEL[state.filter];
+  resultCount.textContent = items.length + '권';
+
+  grid.innerHTML = items.map(b => `
+    <article class="card">
+      <div class="spine" style="--spine-color:${GENRE_VAR[b.genre]}">
+        <span class="badge">${CAT_BADGE[b.cat]}</span>
+        <span class="genre-chip">${b.genreLabel}</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">${b.t}</h3>
+        <div class="card-foot">
+          ${b.price ? `<span class="price">${b.price.toLocaleString('ko-KR')}원</span>` : `<span class="price inquiry">가격문의</span>`}
+          <a class="goto" href="${baseUrl(b.part, b.goods)}" target="_blank" rel="noopener">바로가기</a>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  emptyState.style.display = items.length ? 'none' : 'block';
+}
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.setAttribute('aria-pressed', 'false'));
+    tab.setAttribute('aria-pressed', 'true');
+    state.filter = tab.dataset.filter;
+    render();
+  });
+});
+
+document.querySelectorAll('[data-tab-link]').forEach(link => {
+  link.addEventListener('click', () => {
+    const f = link.dataset.tabLink;
+    tabs.forEach(t => t.setAttribute('aria-pressed', String(t.dataset.filter === f)));
+    state.filter = f;
+    render();
+  });
+});
+
+searchInput.addEventListener('input', e => {
+  state.query = e.target.value;
+  render();
+});
+
+document.getElementById('navToggle').addEventListener('click', () => {
+  const nav = document.getElementById('mainNav');
+  const open = nav.classList.toggle('open');
+  document.getElementById('navToggle').setAttribute('aria-expanded', String(open));
+});
+
+render();
+</script>
+</body>
+</html>
