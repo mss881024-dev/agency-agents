@@ -16,6 +16,12 @@
           {
             "type": "command",
             "command": "cd \"$CLAUDE_PROJECT_DIR\" && git add -A && CHANGED=$(git diff --cached --name-only | tr '\n' ', ') && if [ -n \"$CHANGED\" ]; then git commit -m \"[클로드코드 자동] $(date '+%Y-%m-%d %H:%M') 변경: ${CHANGED}\" && git push origin HEAD 2>&1 || echo '[자동push 실패 - 수동 확인 필요]'; fi"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/sync-obsidian.sh\"",
+            "timeout": 180,
+            "statusMessage": "옵시디언 세션 로그 동기화 중..."
           }
         ]
       }
