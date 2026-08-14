@@ -81,3 +81,6 @@ integrations/kimi/*/
 !integrations/kimi/README.md
 integrations/codex/agents/*
 integrations/osaurus/agency-*/
+
+# Claude Code local settings (personal, not shared)
+.claude/settings.local.json
