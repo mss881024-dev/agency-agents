@@ -43,6 +43,16 @@ if [ -z "$VAULT_DIR" ]; then
   fi
 fi
 
+# 이 스크립트는 항상 main에 커밋+push한다. VAULT_DIR가 다른 브랜치를
+# 체크아웃한 상태(예: 사람이나 다른 세션이 같은 클론에서 별도 작업 중)면
+# 절대 손대지 않고 조용히 건너뛴다 — 엉뚱한 브랜치에 커밋되거나 남의
+# 진행 중인 작업을 건드리는 사고를 막기 위함 (실제로 한 번 발생했었음).
+CURRENT_BRANCH=$(git -C "$VAULT_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$CURRENT_BRANCH" != "main" ]; then
+  echo "[옵시디언 동기화 건너뜀: $VAULT_DIR 가 main이 아니라 '$CURRENT_BRANCH' 브랜치 상태]"
+  exit 0
+fi
+
 (cd "$VAULT_DIR" && git pull --rebase --autostash >/tmp/obsidian-sync-pull.log 2>&1) \
   || echo "[옵시디언 볼트 pull 실패 - 계속 진행] $(tail -3 /tmp/obsidian-sync-pull.log)"
 
